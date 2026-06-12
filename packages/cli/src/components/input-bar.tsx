@@ -6,6 +6,7 @@ import { useRef, useCallback, useEffect } from "react";
 import { useRenderer } from "@opentui/react";
 import type { TextareaRenderable } from "@opentui/core";
 import { useCommandMenu } from "./command-menu/use-command-menu";
+import { Command } from "./command-menu/types";
 
 type Props = {
     onSubmit: (text: string) => void;
@@ -34,18 +35,6 @@ export function InputBar({ onSubmit, disabled = false }: Props) {
         setSelectedIndex,
     } = useCommandMenu();
 
-    const handleCommandExecute = useCallback(
-        (index: number) => {
-            const command = resolveCommand(index);
-            if (!command) return;
-            if (command.action) {
-                void command.action({ exit: () => renderer.destroy() });
-            } else {
-                textareaRef.current?.insertText(command.value + " ");
-            }
-        },
-        [resolveCommand, renderer]
-    );
 
     const handleTextareaContentChange = useCallback(() => {
         const textarea = textareaRef.current;
@@ -65,6 +54,29 @@ export function InputBar({ onSubmit, disabled = false }: Props) {
         textarea.setText("");
     }, [disabled, onSubmit]);
 
+    const handleCommand = useCallback((
+        command:Command | undefined
+    )=>{
+        const textarea = textareaRef.current;
+        if(!textarea || !command) return;
+        textarea.setText("");
+        if(command.action){
+            command.action({
+                exit:()=>renderer.destroy()
+            })
+        }else{
+            textarea.insertText(command.value + " ");   
+        }
+    },[renderer])
+
+     const handleCommandExecute = useCallback(
+        (index: number) => {
+            const command = resolveCommand(index);
+            if (!command) return;
+            handleCommand(command);
+        }
+        [resolveCommand, handleCommand]
+    );
     useEffect(() => {
         const textarea = textareaRef.current;
         if (!textarea) return;
