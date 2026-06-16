@@ -5,7 +5,7 @@ import { useTheme } from "../providers/theme";
     return (
         <box flexDirection="row" gap={1}>
             <text fg={colors.primary}>Build</text>
-            <text attributes={TextAttributes.DIM} fg={colors.dimSeperator}></text>
+            <text attributes={TextAttributes.DIM} fg={colors.dimSeparator}></text>
             <text>opus-4-6</text>
         </box>
     )
