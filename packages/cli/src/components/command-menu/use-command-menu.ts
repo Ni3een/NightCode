@@ -3,6 +3,7 @@ import type {ScrollBoxRenderable} from "@opentui/core"
 import {useKeyboard} from "@opentui/react"
 import {getFilteredCommands} from "./filter-commands"
 import type {Command} from "./types";
+import { useKeyboardLayer } from "../../providers/toast/keyboard-layer";
 
 type UseCommandMenuReturn={
     showCommandMenu:boolean;
@@ -18,10 +19,16 @@ export function useCommandMenu():UseCommandMenuReturn{
     const [selectedCommandIndex,setSelectedIndex] = useState(0);
     const [showCommandMenu,setShowCommandMenu] = useState(false);
     const scrollRef = useRef<ScrollBoxRenderable>(null);
+    const {push,pop,isTopLayer}=useKeyboardLayer();
 
     const commandQuery=showCommandMenu ? textvalue.startsWith("/") ? textvalue.slice(1): "" : "";
 
     const filteredCommands = useMemo(()=> getFilteredCommands(commandQuery),[commandQuery]);
+
+    const close=()=>{
+        setShowCommandMenu(false);
+        pop("command");
+    }
 
     const handleContentChange=(text:string)=>{
         setTextValue(text);
@@ -31,27 +38,31 @@ export function useCommandMenu():UseCommandMenuReturn{
         if(scrollbox){
             scrollbox.scrollTo(0);
         }
-        const prefix=text.startsWith("/") ? text.slice(1) : "";
+        const prefix = text.startsWith("/") ? text.slice(1) : null;
         if(prefix!==null && !prefix.includes(" ")){
             setShowCommandMenu(true);
-        }else{
-            setShowCommandMenu(false);
-        }
+            push("command",()=>{
+                pop("command");
+                return true;
+            })
+        } else {
+                close(); 
+            }
     };
     // resolve command based on current selected index
     const resolveCommand=(index:number):Command | undefined=>{
         const command= filteredCommands[index];
         if(command){
-            setShowCommandMenu(false);
+            close();
         }
         return command;
     }
 
     useKeyboard((key)=>{
-        if(!showCommandMenu) return;
+        if(!showCommandMenu || !isTopLayer("command")) return;
         if(key.name==="escape"){
             key.preventDefault();
-            setShowCommandMenu(false);
+            close();
         }else if(key.name==="up"){
             key.preventDefault();
             setSelectedIndex((i:number)=>{
@@ -83,15 +94,16 @@ export function useCommandMenu():UseCommandMenuReturn{
                 // fall through
         }
 
-    })
-        // always return the hook API
-        return {
-            showCommandMenu,
-            commandQuery,
-            selectedCommandIndex,
-            scrollRef,
-            handleContentChange,
-            resolveCommand,
-            setSelectedIndex,
-        };
-    }
+    });
+
+    // always return the hook API
+    return {
+        showCommandMenu,
+        commandQuery,
+        selectedCommandIndex,
+        scrollRef,
+        handleContentChange,
+        resolveCommand,
+        setSelectedIndex,
+    };
+}
