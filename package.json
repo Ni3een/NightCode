@@ -2,7 +2,10 @@
   "name": "nightcode",
   "version": "1.0.0",
   "workspaces": ["packages/*"],
-  "scripts":{
+  "scripts": {
     "dev": "bun run --watch packages/cli/src/index.tsx"
+  },
+  "dependencies": {
+    "opentui-spinner": "^0.0.7"
   }
 }
