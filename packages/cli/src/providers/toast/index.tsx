@@ -1,11 +1,10 @@
-import { createContext, useContext,useRef,useState,useCallback } from "react";
+import { createContext, useContext,useRef,useState,useCallback, useMemo } from "react";
 import type {ReactNode} from "react";
 import {useTerminalDimensions} from "@opentui/react";
 import type {ToastOptions,ToastVariant} from "./types";
 import {DEFAULT_DURATION} from "./types";
 import { SplitBorder } from "../../components/border";
 import { useTheme } from "../theme";
-
 export type ToastContextValue={
     show:( options:ToastOptions )=>void;
 }
@@ -42,15 +41,13 @@ export function ToastProvider({children}:ToastProviderProps){
             variant:options.variant ?? "info",
             ...options,
             duration,
-        })
+        });
         timeoutRef.current=setTimeout(()=>{
             setCurrentToast(null);
         }, duration);
     },[clearCurrentTimeout]);
 
-    const value:ToastContextValue={
-        show,
-    };
+    const value=useMemo(()=>({show}),[show]);
     return(
         <ToastContext.Provider value={value}>
             {children}
@@ -66,14 +63,14 @@ function Toast({currentToast}:ToastProps){
     const {width}=useTerminalDimensions();
     const {colors}=useTheme();
     if(!currentToast) return null;  
-    const varaintColors:Record<ToastVariant,string>={
+    const variantColors:Record<ToastVariant,string>={
         success:colors.success,
         error:colors.error,
         info:colors.info,
     };
     const borderColor=currentToast.variant
-    ? varaintColors[currentToast.variant]
-    : varaintColors.info;
+    ? variantColors[currentToast.variant]
+    : variantColors.info;
     return (
         <box
         position="absolute"
