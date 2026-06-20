@@ -3,15 +3,22 @@
   "type": "module",
   "private": true,
   "exports": {
-    ".": "./src/index.ts"
+    ".": "./src/index.ts",
+    "./client":"./src/client.ts",
+    "./enums":"./src/enums.ts"
   },
   "scripts": {
     "dev": "bun run --hot src/index.ts"
   },
   "dependencies": {
+    "@ai-sdk/anthropic": "^3.0.85",
+    "@ai-sdk/google": "^3.0.83",
+    "@ai-sdk/groq": "^3.0.42",
+    "@ai-sdk/openai": "^3.0.73",
     "@hono/zod-validator": "^0.7.6",
     "@nightcode/database": "workspace:*",
     "@nightcode/shared": "workspace:*",
+    "ai": "^6.0.208",
     "dotenv": "^17.4.1",
     "hono": "^4.12.12",
     "zod": "^4.3.6"
