@@ -4,10 +4,10 @@ import { InputBar } from "./input-bar";
 import {Spinner} from "../components/spinner";
 type Props={
     children?:ReactNode;
-    onSubmit:(text:string)=>void
-    inputDisabled?:boolean  
+    onSubmit:(text:string)=>void | Promise<void>;
+    inputDisabled?:boolean;
     loading?:boolean;
-
+    interruptible?:boolean;
 };
 
 export function SessionShell({
@@ -15,6 +15,7 @@ export function SessionShell({
   onSubmit,
   inputDisabled = false,
   loading = false,
+  interruptible = false,
 }: Props){
     return (
         <box

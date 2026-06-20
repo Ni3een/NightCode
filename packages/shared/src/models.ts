@@ -5,6 +5,18 @@ export type ModelPricing = {
 
 export type SupportedProvider = "anthropic" | "openai" | "groq" | "google"
 
+// Mirrors Prisma enums — defined here so CLI doesn't depend on the
+// database/Prisma runtime package.
+export type Mode = "BUILD" | "PLAN";
+export type MessageStatus = "PENDING" | "COMPLETE" | "INTERRUPTED";
+
+// Const object for enum-like usage (e.g., MessageStatus.INTERRUPTED)
+export const MessageStatus = {
+  PENDING: "PENDING",
+  COMPLETE: "COMPLETE",
+  INTERRUPTED: "INTERRUPTED",
+} as const;
+
 type SupportedChatModelDefinition = {
   id: string; // model ka naam
 
@@ -62,6 +74,23 @@ export const SUPPORTED_CHAT_MODELS = [
       outputUsdPerMillionTokens: 1.25,
     },
   },
+  {
+    id:"groq",
+    provider:"groq",
+    pricing:{
+      inputUsdPerMillionTokens:0.3,
+      outputUsdPerMillionTokens:1.34
+    }
+  },
+  {
+    id:"gemini",
+    provider:"google",
+    pricing:{
+      inputUsdPerMillionTokens:0.3,
+      outputUsdPerMillionTokens:1.24
+
+    }
+  }
 ] as const satisfies readonly SupportedChatModelDefinition[];
 
 export type SupportedChatModel = (typeof SUPPORTED_CHAT_MODELS)[number];
@@ -71,7 +100,7 @@ export function findSupportedChatModel(modelId: string) {
   return SUPPORTED_CHAT_MODELS.find((model) => model.id === modelId);
 }
 
-export const DEFAULT_CHAT_MODEL_ID: SupportedChatModelId = "claude-opus-4-6";
+export const DEFAULT_CHAT_MODEL_ID: SupportedChatModelId = "groq";
 /**
  Maine ek centralized model config banaya shared package mein — 
  saare supported AI models, unki pricing, aur provider ek jagah define hai.
