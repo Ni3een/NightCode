@@ -1,12 +1,14 @@
-import { ThemeDialogContent } from "../dialogs";
+import {AgentsDialogContent, ThemeDialogContent,ModelsDialogContent } from "../dialogs";
 import type { Command, CommandContext } from "./types";
+import { SessionsDialogContent } from "../dialogs/session-dialogs";
+import { SUPPORTED_CHAT_MODELS } from "../../../../shared/src/models";
 export const COMMANDS: Command[] = [
 {
     name:"new",
     description:"Start a new Conversation",
     value:"/new",
     action:(ctx: CommandContext)=>{
-        ctx.toast.show({message:"Starting a new conversation..."})
+        ctx.navigate("/");
     },
 },
 {
@@ -16,7 +18,7 @@ export const COMMANDS: Command[] = [
     action:(ctx: CommandContext)=>{
         ctx.dialog.open({
             title:"Select an Agent",
-            children:<text>"Agent selection coming soon..."</text>
+            children:<AgentsDialogContent currentMode={ctx.mode} onSelectMode={ctx.setMode} />
         })
     }
 },
@@ -24,10 +26,12 @@ export const COMMANDS: Command[] = [
     name:"model",
     description:"Select AI Model for generation",
     value:"/model",
-    action:(ctx: CommandContext)=>{
+    action:(ctx)=>{
         ctx.dialog.open({
             title:"Select a Model",
-            children:<text>"Model selection coming soon..."</text>
+            children:(
+                <ModelsDialogContent models={SUPPORTED_CHAT_MODELS.map((model) => model.id)} onSelectModel={ctx.setModel} />
+            )
         })
     }
 },
@@ -36,7 +40,10 @@ export const COMMANDS: Command[] = [
     description:"Browse past sessions",
     value:"/sessions",
     action:(ctx: CommandContext)=>{
-        ctx.toast.show({message:"Browsing past sessions..."})
+        ctx.dialog.open({
+            title:"Select a Session",
+            children:<SessionsDialogContent/>
+        })
     }
 
 },
