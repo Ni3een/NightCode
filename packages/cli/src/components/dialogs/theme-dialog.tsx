@@ -2,7 +2,7 @@ import {useCallback,useEffect,useRef} from "react"
 import {useDialog} from "../../providers/dialog"
 import {useTheme} from "../../providers/theme"
 
-import {DialogSearchList} from "../command-menu/dialog-search-list"
+import {DialogSearchList} from "./dialog-search-list"
 import {THEMES} from "../../theme"
 import type {Theme} from "../../theme"
 

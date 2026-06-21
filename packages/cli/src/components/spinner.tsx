@@ -1,8 +1,11 @@
 import "opentui-spinner/react"
+import type { Mode } from "@nightcode/shared"
 import {useTheme} from "../providers/theme"
-
-export function Spinner(){
+type Props={
+    mode?:Mode
+}
+export function Spinner({ mode = "BUILD" }: Props){
     const {colors}=useTheme();
-
-    return <spinner name="aesthetic" color={colors.primary}></spinner>
+    const activeColor = mode === "PLAN" ? colors.planMode : colors.primary;
+    return <spinner name="aesthetic" color={activeColor}></spinner>
 }
