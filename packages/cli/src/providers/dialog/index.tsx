@@ -4,7 +4,7 @@ import { TextAttributes,RGBA } from "@opentui/core";
 import {useKeyboard,useTerminalDimensions} from "@opentui/react";
 import type {DialogConfig} from "./types";
 import { useTheme } from "../theme";
-import { useKeyboardLayer } from "../toast/keyboard-layer";
+import { useKeyboardLayer } from "../keyboard-layer";
 export type DialogContextValue = {
     open: (config: DialogConfig) => void;
     close: () => void;

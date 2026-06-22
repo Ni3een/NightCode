@@ -2,7 +2,9 @@ import dotenv from "dotenv";
 import path from "path";
 import pg from "pg";
 import { PrismaPg } from "@prisma/adapter-pg";
-import { PrismaClient } from "../generated/prisma/index.js";
+import { PrismaClient, Prisma } from "../generated/prisma/index.js";
+
+export type { Prisma };
 
 dotenv.config({
   path: path.resolve(import.meta.dirname, "../../../.env"),
