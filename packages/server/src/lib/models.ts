@@ -24,16 +24,80 @@ export type ResolvedModel = {
   provider: SupportedProvider;
   modelId: SupportedChatModelId;
 };
+
+type AnthropicOptions = {
+  thinking?: {
+    type: "enabled" | "disabled";
+    budgetTokens?: number;
+  };
+};
+
+type GroqOptions = {
+  temperature?: number;
+  maxTokens?: number;
+  topP?: number;
+  frequencyPenalty?: number;
+  presencePenalty?: number;
+  reasoningEffort?: "low" | "medium" | "high"; // For reasoning models
+};
+
+type GoogleOptions = {
+  temperature?: number;
+  maxOutputTokens?: number;
+  topP?: number;
+  topK?: number;
+  thinkingConfig?: {
+    thinkingBudget?: number;
+  };
+};
+
+const ANTHROPIC_PROVIDER_OPTIONS: Partial<Record<AnthropicModelId, AnthropicOptions>> = {
+  "claude-opus-4-6": {
+    thinking: {
+      type: "enabled",
+      budgetTokens: 10000,
+    },
+  },
+  "claude-sonnet-4-6": {
+    thinking: {
+      type: "enabled",
+      budgetTokens: 10000,
+    },
+  },
+};
+
+const GROQ_PROVIDER_OPTIONS: Partial<Record<GroqModelId, GroqOptions>> = {
+  "groq": {
+    temperature: 0.7,
+    maxTokens: 8000,
+    topP: 0.95,
+    frequencyPenalty: 0.0,
+    presencePenalty: 0.0,
+    reasoningEffort: "medium", // For reasoning-capable models
+  },
+};
+
+const GOOGLE_PROVIDER_OPTIONS: Partial<Record<GoogleModelId, GoogleOptions>> = {
+  "gemini": {
+    temperature: 0.7,
+    maxOutputTokens: 8000,
+    topP: 0.95,
+    thinkingConfig: {
+      thinkingBudget: 10000, // For Gemini 2.0 thinking mode
+    },
+  },
+};
 function assertUnsupportedProvider(provider: never): never {
   throw new Error(`Unsupported provider: ${provider}`);
 };
 function resolveAnthropicModel(modelId: AnthropicModelId): ResolvedModel {
+  const options = ANTHROPIC_PROVIDER_OPTIONS[modelId];
   return {
-    model: anthropic(modelId),
+    model: options ? anthropic(modelId, options) : anthropic(modelId),
     provider: "anthropic",
     modelId,
   };
-};
+}
 function resolveOpenAIModel(modelId: OpenAIModelId): ResolvedModel {
   return {
     model: openai(modelId),
@@ -49,8 +113,10 @@ function resolveGroqModel(modelId: GroqModelId): ResolvedModel {
     "groq": "llama-3.3-70b-versatile", // Default Groq model
   };
   
+  const options = GROQ_PROVIDER_OPTIONS[modelId];
+  
   return {
-    model: groq(groqModelMap[modelId]),
+    model: options ? groq(groqModelMap[modelId], options) : groq(groqModelMap[modelId]),
     provider: "groq",
     modelId,
   };
@@ -62,8 +128,10 @@ function resolveGoogleModel(modelId: GoogleModelId): ResolvedModel {
     "gemini": "gemini-2.0-flash-exp", // Default Gemini model
   };
   
+  const options = GOOGLE_PROVIDER_OPTIONS[modelId];
+  
   return {
-    model: google(googleModelMap[modelId]),
+    model: options ? google(googleModelMap[modelId], options) : google(googleModelMap[modelId]),
     provider: "google",
     modelId,
   };
