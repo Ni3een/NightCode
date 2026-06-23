@@ -4,9 +4,11 @@
   "workspaces": ["packages/*"],
   "scripts": {
     "dev": "bun run --watch packages/cli/src/index.tsx",
-    "dev:server":"bun run --hot packages/server/src/index.ts"
+    "dev:server": "bun run --hot packages/server/src/index.ts"
   },
   "dependencies": {
+    "@clerk/backend": "^3.8.2",
+    "open": "^11.0.0",
     "opentui-spinner": "^0.0.7"
   }
 }

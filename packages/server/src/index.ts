@@ -1,6 +1,8 @@
 import {Hono} from 'hono'
 import sessions from "./routes/session"
 import chat from "./routes/chat"
+import { requireAuth } from "./middleware/require-auth";
+import auth from "./routes/auth"
 import {HTTPException} from "hono/http-exception"
 const app=new Hono()
 
@@ -17,8 +19,13 @@ app.onError((error, c) => {
   return c.json({ error: "Internal server error" }, 500);
 });
 
-const routes=app.route("/sessions",sessions).route("/chat",chat);
+app.use("/sessions/*", requireAuth);
+app.use("/chat/*", requireAuth);
 
+const routes=app
+.route("/auth",auth)
+.route("/sessions",sessions)
+.route("/chat",chat)
 export type AppType=typeof routes;
 
 export default {port:3000,fetch:app.fetch,idleTimeout:255}

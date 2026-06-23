@@ -2,6 +2,8 @@ import {AgentsDialogContent, ThemeDialogContent,ModelsDialogContent } from "../d
 import type { Command, CommandContext } from "./types";
 import { SessionsDialogContent } from "../dialogs/session-dialogs";
 import { SUPPORTED_CHAT_MODELS } from "../../../../shared/src/models";
+import { performLogin } from "../../lib/oauth";
+import {clearAuth} from "../../lib/auth"
 export const COMMANDS: Command[] = [
 {
     name:"new",
@@ -62,8 +64,17 @@ export const COMMANDS: Command[] = [
     name:"login",
     description:"Sign in with your browser",
     value:"/login",
-    action:(ctx: CommandContext)=>{
+    action: async (ctx)=>{
         ctx.toast.show({message:"Opening login page..."})
+        try{
+            await performLogin();
+            ctx.toast.show({variant:"success",message:"Signed in"})
+        }
+        catch(error){
+            const message=error instanceof Error ? error.message :"Sign in failed or timed out";
+
+            ctx.toast.show({variant:"error",message})
+        }
     }
 },
 {
@@ -71,6 +82,7 @@ export const COMMANDS: Command[] = [
     description:"Sign out of your account",
     value:"/logout",
     action:(ctx: CommandContext)=>{
+        clearAuth();
         ctx.toast.show({message:"Signing out..."})
     }
 },

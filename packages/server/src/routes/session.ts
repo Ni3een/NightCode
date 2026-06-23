@@ -4,7 +4,7 @@ import { zValidator } from "@hono/zod-validator";
 import { z } from "zod";
 import { db, Role, Mode, MessageStatus } from "@nightcode/database";
 import { findSupportedChatModel } from "@nightcode/shared";
-
+import type { AuthenticatedEnv } from "../middleware/require-auth";
 const createSessionSchema = z.object({
   title: z.string(),
   cwd: z.string().optional(),
@@ -26,9 +26,11 @@ const createSessionValidator = zValidator(
   }
 });
 
-const app = new Hono()
+const app = new Hono<AuthenticatedEnv>()
   .get("/", async (c) => {
+    const userId=c.get("userId");
     const sessions = await db.session.findMany({
+      where:{userId},
       orderBy: { createdAt: "desc" },
       select: {
         id: true,
@@ -50,9 +52,9 @@ const app = new Hono()
     // )
 
     const id = c.req.param("id");
-    
+    const userId=c.get("userId")
     const session = await db.session.findUnique({
-      where: { id },
+      where: { id,userId },
       include: {
         messages: { orderBy: { createdAt: "asc" } },
       },
@@ -73,13 +75,13 @@ const app = new Hono()
     //   500, 
     //   { message: "Mock error: session loading failed" }
     // )
-
+    const userId=c.get("userId");
     const { initialMessage, ...data } = c.req.valid("json");
 
     const session = await db.session.create({
       data: {
         ...data,
-        userId: "mock-user",
+        userId: userId,
         ...(initialMessage && {
           messages: {
             create: {
