@@ -253,7 +253,7 @@ async function streamAIResponse(
 const app = new Hono()
   .post("/:sessionId/resume", async (c) => {
     const sessionId = c.req.param("sessionId");
-
+    
     const session = await db.session.findUnique({
       where: { id: sessionId },
       include: { messages: { orderBy: { createdAt: "asc" } } },
@@ -323,7 +323,7 @@ const app = new Hono()
   })
   .post("/:sessionId", submitValidator, async (c) => {
     const sessionId = c.req.param("sessionId");
-
+    
     const session = await db.session.findUnique({
       where: { id: sessionId },
       include: { messages: { orderBy: { createdAt: "asc" } } },
