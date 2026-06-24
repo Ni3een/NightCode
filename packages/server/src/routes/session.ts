@@ -2,21 +2,13 @@ import { Hono } from "hono";
 // import { HTTPException } from "hono/http-exception";
 import { zValidator } from "@hono/zod-validator";
 import { z } from "zod";
-import { db, Role, Mode, MessageStatus } from "@nightcode/database";
-import { findSupportedChatModel } from "@nightcode/shared";
+import { db } from "@nightcode/database/client";
 import type { AuthenticatedEnv } from "../middleware/require-auth";
+
+import { requireCreditsBalance } from "../middleware/require-credits-balance";
+
 const createSessionSchema = z.object({
   title: z.string(),
-  cwd: z.string().optional(),
-  initialMessage: z
-    .object({
-      role: z.nativeEnum(Role),
-      content: z.string(),
-      mode: z.nativeEnum(Mode),
-      model: z.string()
-        .refine((id) => !!findSupportedChatModel(id), "Unsupported model"),
-    })
-    .optional(),
 });
 
 const createSessionValidator = zValidator(
@@ -28,9 +20,10 @@ const createSessionValidator = zValidator(
 
 const app = new Hono<AuthenticatedEnv>()
   .get("/", async (c) => {
-    const userId=c.get("userId");
+    const userId = c.get("userId");
+
     const sessions = await db.session.findMany({
-      where:{userId},
+      where: { userId },
       orderBy: { createdAt: "desc" },
       select: {
         id: true,
@@ -52,12 +45,10 @@ const app = new Hono<AuthenticatedEnv>()
     // )
 
     const id = c.req.param("id");
-    const userId=c.get("userId")
+    const userId = c.get("userId");
+    
     const session = await db.session.findUnique({
-      where: { id,userId },
-      include: {
-        messages: { orderBy: { createdAt: "asc" } },
-      },
+      where: { id, userId },
     });
 
     if (!session) {
@@ -66,7 +57,7 @@ const app = new Hono<AuthenticatedEnv>()
 
     return c.json(session);
   })
-  .post("/", createSessionValidator, async (c) => {
+  .post("/", requireCreditsBalance, createSessionValidator, async (c) => {
     // MOCK: Uncomment to simulate slow session loading
     // await new Promise((r) => setTimeout(r, 5000))
 
@@ -75,23 +66,15 @@ const app = new Hono<AuthenticatedEnv>()
     //   500, 
     //   { message: "Mock error: session loading failed" }
     // )
-    const userId=c.get("userId");
-    const { initialMessage, ...data } = c.req.valid("json");
+
+    const userId = c.get("userId");
+    const data  = c.req.valid("json");
 
     const session = await db.session.create({
       data: {
         ...data,
-        userId: userId,
-        ...(initialMessage && {
-          messages: {
-            create: {
-              ...initialMessage,
-              status: MessageStatus.COMPLETE,
-            },
-          },
-        })
-      },
-      include: { messages: true },
+        userId,
+      }
     });
 
     return c.json(session, 201);

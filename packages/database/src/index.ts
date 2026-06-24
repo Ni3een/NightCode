@@ -1,2 +1,1 @@
-export * from "./client.js";
-export * from "./enums.js";
+export * from "../generated/prisma/client.ts";

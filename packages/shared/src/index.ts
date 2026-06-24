@@ -3,22 +3,21 @@ export {
   DEFAULT_CHAT_MODEL_ID,
   findSupportedChatModel,
   MessageStatus,
-  type Mode,
   type MessageStatus as MessageStatusType,
   type ModelPricing,
   type SupportedProvider,
   type SupportedChatModel,
   type SupportedChatModelId,
-} from "./src/models";
+} from "./models";
 
 export {
-  toolCallArgsSchema,
-  messagePartSchema,
-  messagePartsSchema,
-  chatStreamEventSchema,
-  type MessagePart,
-  type ChatStreamEvent,
-} from "./src/schema";
+ Mode,
+ modeSchema,
+ toolInputSchemas,
+ getToolContracts,
+ type ToolContracts,
+ type ModeType,
+} from "./schema";
 
 /**
  Maine shared package mein do files banayi:

@@ -1,7 +1,7 @@
 import { anthropic } from "@ai-sdk/anthropic";
 import { openai } from "@ai-sdk/openai";
 import { createGroq } from "@ai-sdk/groq";
-import { google } from "@ai-sdk/google";
+import { createGoogleGenerativeAI } from "@ai-sdk/google";
 import {
   findSupportedChatModel,
   type SupportedChatModel,
@@ -14,6 +14,10 @@ const groq = createGroq({
   apiKey: process.env.GROQ_API,
 });
 
+const google = createGoogleGenerativeAI({
+  apiKey: process.env.GOOGLE_GENERATIVE_AI_API_KEY,
+});
+
 type AnthropicModelId = Extract<SupportedChatModel, { provider: "anthropic" }>["id"];
 type OpenAIModelId = Extract<SupportedChatModel, { provider: "openai" }>["id"];
 type GroqModelId = Extract<SupportedChatModel, { provider: "groq" }>["id"];
@@ -23,6 +27,7 @@ export type ResolvedModel = {
   model: LanguageModel;
   provider: SupportedProvider;
   modelId: SupportedChatModelId;
+  providerOptions?: Record<string, any>;
 };
 
 type AnthropicOptions = {
@@ -32,24 +37,6 @@ type AnthropicOptions = {
   };
 };
 
-type GroqOptions = {
-  temperature?: number;
-  maxTokens?: number;
-  topP?: number;
-  frequencyPenalty?: number;
-  presencePenalty?: number;
-  reasoningEffort?: "low" | "medium" | "high"; // For reasoning models
-};
-
-type GoogleOptions = {
-  temperature?: number;
-  maxOutputTokens?: number;
-  topP?: number;
-  topK?: number;
-  thinkingConfig?: {
-    thinkingBudget?: number;
-  };
-};
 
 const ANTHROPIC_PROVIDER_OPTIONS: Partial<Record<AnthropicModelId, AnthropicOptions>> = {
   "claude-opus-4-6": {
@@ -66,36 +53,17 @@ const ANTHROPIC_PROVIDER_OPTIONS: Partial<Record<AnthropicModelId, AnthropicOpti
   },
 };
 
-const GROQ_PROVIDER_OPTIONS: Partial<Record<GroqModelId, GroqOptions>> = {
-  "groq": {
-    temperature: 0.7,
-    maxTokens: 8000,
-    topP: 0.95,
-    frequencyPenalty: 0.0,
-    presencePenalty: 0.0,
-    reasoningEffort: "medium", // For reasoning-capable models
-  },
-};
 
-const GOOGLE_PROVIDER_OPTIONS: Partial<Record<GoogleModelId, GoogleOptions>> = {
-  "gemini": {
-    temperature: 0.7,
-    maxOutputTokens: 8000,
-    topP: 0.95,
-    thinkingConfig: {
-      thinkingBudget: 10000, // For Gemini 2.0 thinking mode
-    },
-  },
-};
 function assertUnsupportedProvider(provider: never): never {
   throw new Error(`Unsupported provider: ${provider}`);
 };
 function resolveAnthropicModel(modelId: AnthropicModelId): ResolvedModel {
   const options = ANTHROPIC_PROVIDER_OPTIONS[modelId];
   return {
-    model: options ? anthropic(modelId, options) : anthropic(modelId),
+    model: anthropic(modelId),
     provider: "anthropic",
     modelId,
+    ...(options ? { providerOptions: { anthropic: options } } : {}),
   };
 }
 function resolveOpenAIModel(modelId: OpenAIModelId): ResolvedModel {
@@ -112,11 +80,9 @@ function resolveGroqModel(modelId: GroqModelId): ResolvedModel {
   const groqModelMap: Record<GroqModelId, string> = {
     "groq": "llama-3.3-70b-versatile", // Default Groq model
   };
-  
-  const options = GROQ_PROVIDER_OPTIONS[modelId];
-  
+
   return {
-    model: options ? groq(groqModelMap[modelId], options) : groq(groqModelMap[modelId]),
+    model: groq(groqModelMap[modelId]),
     provider: "groq",
     modelId,
   };
@@ -125,17 +91,15 @@ function resolveGroqModel(modelId: GroqModelId): ResolvedModel {
 function resolveGoogleModel(modelId: GoogleModelId): ResolvedModel {
   // Map your custom ID to actual Google model names
   const googleModelMap: Record<GoogleModelId, string> = {
-    "gemini": "gemini-2.0-flash-exp", // Default Gemini model
+    "gemini": "gemini-2.0-flash", // Default Gemini model
   };
-  
-  const options = GOOGLE_PROVIDER_OPTIONS[modelId];
-  
+
   return {
-    model: options ? google(googleModelMap[modelId], options) : google(googleModelMap[modelId]),
+    model: google(googleModelMap[modelId]),
     provider: "google",
     modelId,
   };
-};
+}
 function resolveSupportedChatModel(model: SupportedChatModel): ResolvedModel {
   const provider = model.provider;
 

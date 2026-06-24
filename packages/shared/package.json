@@ -3,9 +3,10 @@
   "type": "module",
   "private": true,
   "exports": {
-    ".": "./index.ts"
+    ".": "./src/index.ts"
   },
   "dependencies": {
+    "ai": "^6.0.209",
     "zod": "^4.3.6"
   }
 }
