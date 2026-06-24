@@ -4,6 +4,7 @@ import { SessionsDialogContent } from "../dialogs/session-dialogs";
 import { SUPPORTED_CHAT_MODELS } from "../../../../shared/src/models";
 import { performLogin } from "../../lib/oauth";
 import {clearAuth} from "../../lib/auth"
+import { openBillingPortal, openUpgradeCheckout } from "../../lib/upgrade"
 export const COMMANDS: Command[] = [
 {
     name:"new",
@@ -90,16 +91,28 @@ export const COMMANDS: Command[] = [
     name:"upgrade",
     description:"Upgrade to Pro for more features",
     value:"/upgrade",
-    action:(ctx: CommandContext)=>{
+    action: async (ctx: CommandContext)=>{
         ctx.toast.show({message:"Opening upgrade page..."})
+        try {
+            await openUpgradeCheckout();
+        } catch (error) {
+            const message = error instanceof Error ? error.message : "Failed to open upgrade page";
+            ctx.toast.show({ variant: "error", message });
+        }
     }
 },
 {
     name:"usage",
     description:"Open billing portal in your browser",
     value:"/usage",
-    action:(ctx: CommandContext)=>{
+    action: async (ctx: CommandContext)=>{
         ctx.toast.show({message:"Opening billing portal..."})
+        try {
+            await openBillingPortal();
+        } catch (error) {
+            const message = error instanceof Error ? error.message : "Failed to open billing portal";
+            ctx.toast.show({ variant: "error", message });
+        }
     }
 },
 {

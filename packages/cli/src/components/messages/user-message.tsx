@@ -1,10 +1,10 @@
 import { TextAttributes } from "@opentui/core";
 import { EmptyBorder } from "../border";
 import { useTheme } from "../../providers/theme";
-import {Mode} from "@nightcode/database/enums"
+import {Mode,type ModeType} from "@nightcode/shared"
 type Props = {
   message: string;
-  mode:Mode;
+  mode:ModeType;
 };
 
 export function UserMessage({ message,mode }: Props) {
