@@ -3,11 +3,16 @@
   "version": "1.0.0",
   "workspaces": ["packages/*"],
   "scripts": {
+    "start": "bun run packages/server/src/index.ts",
     "dev": "bun run --watch packages/cli/src/index.tsx",
-    "dev:server": "bun run --hot packages/server/src/index.ts"
+    "dev:server": "bun run --hot packages/server/src/index.ts",
+    "postinstall": "bunx  packages/database && bunx prisma generate",
+    "build:cli":"bun run --filter @nightcode/cli build",
+    "link:cli" :"bun run build:cli && cd packages/cli && bun link"
   },
   "dependencies": {
     "@clerk/backend": "^3.8.2",
+    "dotenv": "^17.4.2",
     "open": "^11.0.0",
     "opentui-spinner": "^0.0.7"
   },
