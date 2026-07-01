@@ -1,6 +1,6 @@
  import {TextAttributes} from "@opentui/core";
 import { useTheme } from "../providers/theme";
-import { Mode } from "@nightcode/shared";
+import { Mode } from "../lib/shared.ts";
 import { usePromptConfig } from "../providers/prompt-config";
  export function StatusBar(){
     const {mode,model} = usePromptConfig();

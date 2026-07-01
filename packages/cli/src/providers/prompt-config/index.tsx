@@ -1,6 +1,6 @@
 import { createContext, useContext, useState, useCallback } from "react";
 import type { ReactNode } from "react";
-import { DEFAULT_CHAT_MODEL_ID, type SupportedChatModelId,Mode, type ModeType } from "@nightcode/shared";
+import { DEFAULT_CHAT_MODEL_ID, type SupportedChatModelId,Mode, type ModeType } from "../../lib/shared.ts";
 
 type PromptConfigContextValue = {
   mode: ModeType;

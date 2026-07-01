@@ -3,7 +3,7 @@ import type { AppType } from "@nightcode/server";
 import { clearAuth, getAuth } from "./auth";
 
 export const apiClient = hc<AppType>(
-  process.env.API_URL ?? "https://api.example.com",
+  process.env.API_URL ?? "https://nightcode-production-8ace.up.railway.app",
   {
     fetch: async (
       input: Parameters<typeof fetch>[0],

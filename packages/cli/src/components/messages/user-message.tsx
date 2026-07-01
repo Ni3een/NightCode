@@ -1,7 +1,7 @@
 import { TextAttributes } from "@opentui/core";
 import { EmptyBorder } from "../border";
 import { useTheme } from "../../providers/theme";
-import {Mode,type ModeType} from "@nightcode/shared"
+import {Mode,type ModeType} from "../../lib/shared.ts"
 type Props = {
   message: string;
   mode:ModeType;

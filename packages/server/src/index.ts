@@ -33,6 +33,11 @@ const routes=app
 
 export type AppType=typeof routes;
 
-export default {port: Number(process.env.PORT) || 3000, fetch:app.fetch, idleTimeout:255}
+export default {
+  port: Number(process.env.PORT) || 3000,
+  hostname: "0.0.0.0",
+  fetch: app.fetch,
+  idleTimeout: 255
+}
 
 //idleTimeout must be high,otherwise LLM toool calls might not complete

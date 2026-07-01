@@ -1,13 +1,13 @@
 import { useEffect, useMemo, useRef } from "react";
 import { z } from "zod";
-import { DEFAULT_CHAT_MODEL_ID, modeSchema } from "@nightcode/shared";
+import { DEFAULT_CHAT_MODEL_ID, modeSchema } from "../lib/shared.ts";
 import { useNavigate, useLocation } from "react-router"; // 
 import { SessionShell } from "../components/session-shell";
 import { UserMessage } from "../components/messages";
 import { useToast } from "../providers/toast";
 import { apiClient } from "../lib/api-client";
 import { getErrorMessage } from "../lib/http-error";
-import {Mode} from "@nightcode/shared"
+import {Mode} from "../lib/shared.ts"
 const newSessionStateSchema = z.object({
   message: z.string(),
   mode:modeSchema,

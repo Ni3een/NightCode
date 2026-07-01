@@ -1,3 +1,12 @@
+import { config as loadEnv } from "dotenv";
+import { join } from "node:path";
+import { homedir } from "node:os";
+
+// Load user config from ~/.ainightcode/.env (overrides defaults)
+loadEnv({ path: join(homedir(), ".ainightcode", ".env"), quiet: true });
+// Also try .env in cwd (for local dev)
+loadEnv({ quiet: true });
+
 import { createCliRenderer } from "@opentui/core";
 import { createRoot } from "@opentui/react";
 import { createMemoryRouter, RouterProvider } from "react-router";

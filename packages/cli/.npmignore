@@ -1,0 +1,28 @@
+# Source code — not needed in the published package (dist/ is the built output)
+src/
+tsconfig.json
+
+# Bun lock file
+bun.lock
+bun.lockb
+
+# Test and coverage files
+coverage/
+*.test.ts
+*.spec.ts
+
+# Temp files
+*.tsbuildinfo
+.cache/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Editor config
+.vscode/
+.idea/
+
+# NOTE: dist/ is intentionally NOT ignored here.
+# The root .gitignore excludes dist/, but .npmignore takes precedence for npm publish.
+# dist/ is explicitly included via the "files" field in package.json.

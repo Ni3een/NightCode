@@ -35,9 +35,10 @@ function getErrorMessage(error: unknown) {
 }
 
 export async function performLogin() {
-  const clerkFrontendApi = process.env.CLERK_FRONTEND_API;
-  const clientId = process.env.CLERK_OAUTH_CLIENT_ID;
-  const apiUrl = process.env.API_URL ?? "http://localhost:3000";
+  // Default to production values - users can override via ~/.ainightcode/.env
+  const clerkFrontendApi = process.env.CLERK_FRONTEND_API ?? "https://brief-goshawk-59.clerk.accounts.dev";
+  const clientId = process.env.CLERK_OAUTH_CLIENT_ID ?? "SWJtbHenKY8cpELc";
+  const apiUrl = process.env.API_URL ?? "https://nightcode-production-8ace.up.railway.app";
 
   if (!clerkFrontendApi) throw new Error("CLERK_FRONTEND_API not set");
   if (!clientId) throw new Error("CLERK_OAUTH_CLIENT_ID not set");

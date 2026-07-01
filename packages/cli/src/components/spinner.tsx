@@ -1,5 +1,5 @@
 import "opentui-spinner/react"
-import type { ModeType } from "@nightcode/shared"
+import type { ModeType } from "../lib/shared.ts"
 import {useTheme} from "../providers/theme"
 type Props={
     mode?:ModeType
