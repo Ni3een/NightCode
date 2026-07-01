@@ -51,10 +51,10 @@ try {
   content = content.replace(/\r\n/g, "\n");
 
   // Ensure shebang is the very first line (no BOM, no leading whitespace)
-  if (!content.startsWith("#!/usr/bin/env bun\n")) {
+  if (!content.startsWith("#!/usr/bin/env node\n")) {
     // Remove any existing broken shebang or @bun marker then prepend clean one
     content = content.replace(/^[^\n]*\n/, "");
-    content = "#!/usr/bin/env bun\n" + content;
+    content = "#!/usr/bin/env node\n" + content;
     console.log("   ✓ Fixed shebang in dist/index.js");
   } else {
     console.log("   ✓ Shebang already correct in dist/index.js");

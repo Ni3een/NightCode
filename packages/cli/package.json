@@ -1,6 +1,6 @@
 {
   "name": "ainightcode",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "AI-powered coding assistant for your terminal — powered by NightCode",
   "type": "module",
   "author": "NightCode",
@@ -20,7 +20,7 @@
     "url": "https://github.com/Ni3een/NightCode.git"
   },
   "engines": {
-    "bun": ">=1.0.0"
+    "node": ">=18.0.0"
   },
   "bin": {
     "ainightcode": "./dist/index.js"
@@ -34,7 +34,7 @@
   },
   "scripts": {
     "dev": "bun run --watch src/index.tsx",
-    "build": "bun build src/index.tsx --outdir dist --target bun --banner '#!/usr/bin/env bun'"
+    "build": "bun build src/index.tsx --outdir dist --target node --banner '#!/usr/bin/env node'"
   },
   "dependencies": {
     "@ai-sdk/react": "^3.0.211",

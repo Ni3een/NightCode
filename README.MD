@@ -44,7 +44,7 @@ That's it! The CLI will launch an interactive session where you can:
 ## 📦 Tech Stack
 
 ### Frontend (CLI)
-- **Runtime**: Bun
+- **Runtime**: Node.js (v18+)
 - **UI Framework**: React + Ink
 - **Styling**: Tailwind-inspired terminal colors
 - **HTTP Client**: Hono Client
@@ -78,7 +78,8 @@ NightCode/
 ## 💻 Development
 
 ### Prerequisites
-- [Bun](https://bun.sh) >= 1.0.0
+- [Node.js](https://nodejs.org) >= 18.0.0
+- [Bun](https://bun.sh) >= 1.0.0 (for development)
 - PostgreSQL database
 - Clerk account for authentication
 

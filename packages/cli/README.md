@@ -8,7 +8,7 @@
 
 ## Requirements
 
-- **[Bun](https://bun.sh) ≥ 1.0** — This CLI runs on Bun (not Node.js)
+- **[Node.js](https://nodejs.org) ≥ 18.0** — This CLI runs on Node.js
 
 ## Installation
 
